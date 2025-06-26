@@ -1,3 +1,3 @@
 #!/bin/bash
-yum update -y
+# yum update -y
 amazon-linux-extras install nginx1 -y
