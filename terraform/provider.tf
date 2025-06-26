@@ -1,9 +1,5 @@
-
-
-output "instance_public_ip" {
-  value = aws_instance.web_server.public_ip
-}
-
-output "web_url" {
-  value = "http://${aws_instance.web_server.public_ip}"
+provider "aws" {
+  region     = var.aws_region
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
 }
