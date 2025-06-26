@@ -1,9 +1,17 @@
-
-
-output "instance_public_ip" {
-  value = aws_instance.web_server.public_ip
+AlokKumarnayak21resource "random_id" "bucket_id" {
+  byte_length = 4
 }
 
-output "web_url" {
-  value = "http://${aws_instance.web_server.public_ip}"
+resource "aws_s3_bucket" "codepipeline_artifacts" {
+  bucket = "codepipeline-artifacts-${random_id.bucket_id.hex}"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket_public_access_block" "artifact_block" {
+  bucket = aws_s3_bucket.codepipeline_artifacts.id
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+  restrict_public_buckets = true
 }
