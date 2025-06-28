@@ -64,14 +64,14 @@
     <table>
       <tr><th>Component</th><th>Description</th></tr>
       <tr><td>VPC</td><td>Custom Virtual Private Cloud (10.0.0.0/16)</td></tr>
-      <tr><td>Public Subnet</td><td>For EC2 instance with internet access</td></tr>
+      <tr><td>Public Subnet</td><td>For EC2 instance with internet access(10.0.1.0/24)</td></tr>
       <tr><td>Internet Gateway</td><td>Enables outbound internet traffic</td></tr>
       <tr><td>Route Table</td><td>Routes internet traffic via IGW</td></tr>
       <tr><td>EC2 Instance</td><td>Amazon Linux with Nginx installed</td></tr>
       <tr><td>Security Group</td><td>Allows HTTP (80), HTTPS (443), SSH (22)</td></tr>
       <tr><td>CI/CD Pipeline</td><td>AWS CodePipeline + CodeDeploy for deployments</td></tr>
       <tr><td>CodeDeploy App</td><td>Manages application deployment to EC2</td></tr>
-      <tr><td>IAM Roles</td><td>Access management for EC2, CodeDeploy, and S3</td></tr>
+      <tr><td>IAM Roles</td><td>Access management for EC2, CodeDeploy</td></tr>
     </table>
   </div>
 
