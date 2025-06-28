@@ -1,8 +1,209 @@
-<!-- index.html -->
+<!-- <!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head><title>My App</title></head>
 <body>
   <h1>Hello from Nginx on EC2 via CodePipeline!</h1>
+</body>
+</html>
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Automated AWS Infrastructure Setup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 40px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    h1, h2 {
+      color: #0056b3;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 10px 0;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: left;
+    }
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .section {
+      margin-bottom: 40px;
+    }
+    .checklist td {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Automated AWS Infrastructure Setup with CodeDeploy CI/CD Pipeline for Nginx Web Server</h1>
+
+  <div class="section">
+    <h2>🔧 1. Project Overview</h2>
+    <p>This project provisions an AWS environment using Terraform to:</p>
+    <ul>
+      <li>Deploy a VPC with public and private subnets</li>
+      <li>Launch an EC2 instance with Nginx web server</li>
+      <li>Configure Security Groups for HTTP, HTTPS, and SSH access</li>
+      <li>Set up a CI/CD pipeline using AWS CodeDeploy to automatically deploy a web application to the EC2 instance</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🗂️ 2. Infrastructure Components</h2>
+    <table>
+      <tr><th>Component</th><th>Description</th></tr>
+      <tr><td>VPC</td><td>Custom Virtual Private Cloud (10.0.0.0/16)</td></tr>
+      <tr><td>Public Subnet</td><td>For EC2 instance with internet access</td></tr>
+      <tr><td>Internet Gateway</td><td>Enables outbound internet traffic</td></tr>
+      <tr><td>Route Table</td><td>Routes internet traffic via IGW</td></tr>
+      <tr><td>EC2 Instance</td><td>Amazon Linux with Nginx installed</td></tr>
+      <tr><td>Security Group</td><td>Allows HTTP (80), HTTPS (443), SSH (22)</td></tr>
+      <tr><td>CI/CD Pipeline</td><td>AWS CodePipeline + CodeDeploy for deployments</td></tr>
+      <tr><td>CodeDeploy App</td><td>Manages application deployment to EC2</td></tr>
+      <tr><td>IAM Roles</td><td>Access management for EC2, CodeDeploy, and S3</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>📂 3. Terraform Configuration Files</h2>
+    <table>
+      <tr><th>File Name</th><th>Purpose</th></tr>
+      <tr><td>provider.tf</td><td>AWS provider and region setup</td></tr>
+      <tr><td>vpc.tf</td><td>VPC, subnets, IGW, route tables</td></tr>
+      <tr><td>sggroup.tf</td><td>Security group rules</td></tr>
+      <tr><td>instance.tf</td><td>EC2 instance configuration</td></tr>
+      <tr><td>outputs.tf</td><td>Outputs for public IP and DNS</td></tr>
+      <tr><td>variables.tf</td><td>Declared input variables</td></tr>
+      <tr><td>terraform.tfvars</td><td>Variable values</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>🌐 4. Security Group Configuration</h2>
+    <ul>
+      <li><strong>Inbound Rules:</strong>
+        <ul>
+          <li>HTTP: Allow port 80 from 0.0.0.0/0</li>
+          <li>HTTPS: Allow port 443 from 0.0.0.0/0</li>
+          <li>SSH: Allow port 22 from 0.0.0.0/0 (or your specific IP)</li>
+        </ul>
+      </li>
+      <li><strong>Outbound Rules:</strong> Allow all traffic to 0.0.0.0/0</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>📦 5. EC2 Instance Configuration</h2>
+    <ul>
+      <li>Operating System: Amazon Linux 2</li>
+      <li>Web Server: Nginx installed via user_data script</li>
+      <li>Public IP: Assigned automatically</li>
+      <li>IAM Role: Attached to allow S3 and CodeDeploy access</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🚀 6. AWS CodeDeploy Pipeline Flow</h2>
+    <p>Components:</p>
+    <ul>
+      <li>Source: GitHub Repository</li>
+      <li>CodeDeploy App: Deploys new revisions to EC2</li>
+      <li>Deployment Group: Targets EC2 instance by tag or ID</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>🗂️ 7. AppSpec File for CodeDeploy</h2>
+    <pre><code>version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /usr/share/nginx/html
+    overwrite: yes
+hooks:
+  BeforeInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/start_server.sh
+      timeout: 300
+      runas: root</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>📝 8. Example Script: install_dependencies.sh</h2>
+    <pre><code>#!/bin/bash
+echo "Nginx is already installed via EC2 user data. Skipping installation step."
+exit 0</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>📝 9. Example Script: start_server.sh</h2>
+    <pre><code>#!/bin/bash
+systemctl start nginx
+systemctl enable nginx</code></pre>
+  </div>
+
+  <div class="section">
+    <h2>🔐 10. IAM Roles Configuration</h2>
+    <ul>
+      <li>EC2 IAM Role: Allow S3 access and CodeDeploy agent permissions.</li>
+      <li>CodeDeploy IAM Role: Allow deployments to EC2.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>✅ 11. SSH Access Configuration</h2>
+    <pre><code>ssh -i your-key.pem ec2-user@&lt;your-public-ip&gt;</code></pre>
+    <p>Ensure port 22 is allowed in your security group.</p>
+  </div>
+
+  <div class="section">
+    <h2>✅ 12. Testing Checklist</h2>
+    <table class="checklist">
+      <tr><td>EC2 provisioned via Terraform</td><td>✅</td></tr>
+      <tr><td>Nginx running on EC2</td><td>✅</td></tr>
+      <tr><td>EC2 accessible via SSH</td><td>✅</td></tr>
+      <tr><td>CodeDeploy configured</td><td>✅</td></tr>
+      <tr><td>GitHub integrated with pipeline</td><td>✅</td></tr>
+      <tr><td>Application deployed via CI/CD</td><td>✅</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>🔄 13. Deployment Workflow Summary</h2>
+    <ol>
+      <li>Developer pushes code to GitHub</li>
+      <li>CodeDeploy triggered via CodePipeline</li>
+      <li>CodeDeploy deploys to EC2 instance</li>
+      <li>Nginx serves the updated static web page</li>
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>📢 Further Enhancement Recommendations</h2>
+    <ul>
+      <li>Add HTTPS using ACM (Amazon Certificate Manager)</li>
+      <li>Restrict SSH access to a specific IP range</li>
+      <li>Set up automatic rollback in CodeDeploy</li>
+      <li>Add health checks for post-deployment verification</li>
+    </ul>
+  </div>
+
 </body>
 </html>
